@@ -1,11 +1,11 @@
 package com.daroguzo.springrestapi.events;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Builder @AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @EqualsAndHashCode(of = "id")
 public class Event {
 
     private Integer id;

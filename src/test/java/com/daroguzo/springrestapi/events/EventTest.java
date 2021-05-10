@@ -12,4 +12,20 @@ class EventTest {
         assertThat(event).isNotNull();
     }
 
+    @Test
+    public void javaBean() {
+        // Given
+        String name = "Event";
+        String description = "Spring";
+
+        // When
+        Event event = new Event();
+        event.setName(name);
+        event.setDescription(description);
+
+        // Then
+        assertThat(event.getName()).isEqualTo(name);
+        assertThat(event.getDescription()).isEqualTo(description);
+    }
+
 }
