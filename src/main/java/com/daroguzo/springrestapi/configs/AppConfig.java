@@ -1,8 +1,10 @@
 package com.daroguzo.springrestapi.configs;
 
 import com.daroguzo.springrestapi.accounts.Account;
+import com.daroguzo.springrestapi.accounts.AccountRepository;
 import com.daroguzo.springrestapi.accounts.AccountService;
 import com.daroguzo.springrestapi.accounts.Accountable;
+import com.daroguzo.springrestapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -33,14 +35,24 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account daroguzo = Account.builder()
-                        .email("daroguzo@email.com")
-                        .password("daroguzo")
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(Set.of(Accountable.ADMIN, Accountable.USER))
                         .build();
-                accountService.saveAccount(daroguzo);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(Accountable.USER))
+                        .build();
+                accountService.saveAccount(user);
             }
         };
     }

@@ -3,6 +3,7 @@ package com.daroguzo.springrestapi.configs;
 import com.daroguzo.springrestapi.accounts.Account;
 import com.daroguzo.springrestapi.accounts.AccountService;
 import com.daroguzo.springrestapi.accounts.Accountable;
+import com.daroguzo.springrestapi.common.AppProperties;
 import com.daroguzo.springrestapi.common.BaseControllerTest;
 import com.daroguzo.springrestapi.common.TestDescription;
 import org.junit.Test;
@@ -21,26 +22,16 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Test
     @TestDescription("인증 토큰을 발급 받는 테스트")
-    public void getAuthToken() throws Exception{
-        // Given
-        String username = "daroguzo@email.com";
-        String password = "daroguzo";
-        Account daroguzo = Account.builder()
-                .email(username)
-                .password(password)
-                .roles(Set.of(Accountable.ADMIN, Accountable.USER))
-                .build();
-        this.accountService.saveAccount(daroguzo);
-
-        String clientId= "myApp";
-        String clientSecret = "pass";
-
+    public void getAuthToken() throws Exception {
         this.mockMvc.perform(post("/oauth/token")
-                    .with(httpBasic(clientId, clientSecret))
-                    .param("username", username)
-                    .param("password", password)
+                    .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                    .param("username", appProperties.getUserUsername())
+                    .param("password", appProperties.getUserPassword())
                     .param("grant_type", "password"))
                 .andDo(print())
                 .andExpect(status().isOk())

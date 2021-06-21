@@ -4,6 +4,7 @@ import com.daroguzo.springrestapi.accounts.Account;
 import com.daroguzo.springrestapi.accounts.AccountRepository;
 import com.daroguzo.springrestapi.accounts.AccountService;
 import com.daroguzo.springrestapi.accounts.Accountable;
+import com.daroguzo.springrestapi.common.AppProperties;
 import com.daroguzo.springrestapi.common.BaseControllerTest;
 import com.daroguzo.springrestapi.common.TestDescription;
 import org.junit.Before;
@@ -40,6 +41,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp() {
@@ -135,22 +139,17 @@ public class EventControllerTests extends BaseControllerTest {
 
     private String getAccessToken() throws Exception {
         // Given
-        String username = "daroguzo@email.com";
-        String password = "daroguzo";
         Account daroguzo = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(Set.of(Accountable.ADMIN, Accountable.USER))
                 .build();
         this.accountService.saveAccount(daroguzo);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
-                .param("username", username)
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         var responseBody = perform.andReturn().getResponse().getContentAsString();
