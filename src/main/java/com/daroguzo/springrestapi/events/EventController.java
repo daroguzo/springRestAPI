@@ -1,7 +1,6 @@
 package com.daroguzo.springrestapi.events;
 
 import com.daroguzo.springrestapi.accounts.Account;
-import com.daroguzo.springrestapi.accounts.AccountAdapter;
 import com.daroguzo.springrestapi.accounts.CurrentUser;
 import com.daroguzo.springrestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
@@ -13,10 +12,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;

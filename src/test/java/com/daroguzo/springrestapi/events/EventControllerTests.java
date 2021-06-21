@@ -7,8 +7,9 @@ import com.daroguzo.springrestapi.accounts.Accountable;
 import com.daroguzo.springrestapi.common.AppProperties;
 import com.daroguzo.springrestapi.common.BaseControllerTest;
 import com.daroguzo.springrestapi.common.TestDescription;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -45,14 +46,14 @@ public class EventControllerTests extends BaseControllerTest {
     @Autowired
     AppProperties appProperties;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.eventRepository.deleteAll();
         this.accountRepository.deleteAll();
     }
 
     @Test
-    @TestDescription("정상적으로 이벤트 생성하는 테스트")
+    @DisplayName("정상적으로 이벤트 생성하는 테스트")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -80,56 +81,56 @@ public class EventControllerTests extends BaseControllerTest {
                 .andExpect(jsonPath("free").value(false))
                 .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
-//                .andDo(document("create-event",
-//                        links(
-//                                linkWithRel("self").description("link to self"),
-//                                linkWithRel("query-events").description("link to query events"),
-//                                linkWithRel("update-event").description("link to update an existing event"),
-//                                linkWithRel("profile").description("link to profile")
-//                        ),
-//                        requestHeaders(
-//                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-//                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
-//                        ),
-//                        requestFields(
-//                                fieldWithPath("name").description("Name of new event"),
-//                                fieldWithPath("description").description("description of new event"),
-//                                fieldWithPath("beginEnrollmentDateTime").description("date time of begin of new event"),
-//                                fieldWithPath("closeEnrollmentDateTime").description("date time of close of new event"),
-//                                fieldWithPath("beginEventDateTime").description("date time of begin of new event"),
-//                                fieldWithPath("endEventDateTime").description("date time of end of new event"),
-//                                fieldWithPath("location").description("location of new event"),
-//                                fieldWithPath("basePrice").description("base price of new event"),
-//                                fieldWithPath("maxPrice").description("max price of new event"),
-//                                fieldWithPath("limitOfEnrollment").description("limit of new event")
-//                        ),
-//                        responseHeaders(
-//                                headerWithName(HttpHeaders.LOCATION).description("Location header"),
-//                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
-//                        ),
-//                        requestFields(
-//                                fieldWithPath("id").description("identifier of new event"),
-//                                fieldWithPath("name").description("Name of new event"),
-//                                fieldWithPath("description").description("description of new event"),
-//                                fieldWithPath("beginEnrollmentDateTime").description("date time of begin of new event"),
-//                                fieldWithPath("closeEnrollmentDateTime").description("date time of close of new event"),
-//                                fieldWithPath("beginEventDateTime").description("date time of begin of new event"),
-//                                fieldWithPath("endEventDateTime").description("date time of end of new event"),
-//                                fieldWithPath("location").description("location of new event"),
-//                                fieldWithPath("basePrice").description("base price of new event"),
-//                                fieldWithPath("maxPrice").description("max price of new event"),
-//                                fieldWithPath("limitOfEnrollment").description("limit of new event"),
-//                                fieldWithPath("free").description("it tells if this event is free or not"),
-//                                fieldWithPath("offline").description("it tells if this offline event or not"),
-//                                fieldWithPath("eventStatus").description("eventStatus"),
-//                                fieldWithPath("_links.self.href").description("link to self"),
-//                                fieldWithPath("_links.query-events.href").description("link to query event list"),
-//                                fieldWithPath("_links.update-event.href").description("link to update existing event list"),
-//                                fieldWithPath("_links.profile.href").description("link to profile")
-//
-//
-//                        )
-//                ))
+                .andDo(document("create-event",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("query-events").description("link to query events"),
+                                linkWithRel("update-event").description("link to update an existing event"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("Name of new event"),
+                                fieldWithPath("description").description("description of new event"),
+                                fieldWithPath("beginEnrollmentDateTime").description("date time of begin of new event"),
+                                fieldWithPath("closeEnrollmentDateTime").description("date time of close of new event"),
+                                fieldWithPath("beginEventDateTime").description("date time of begin of new event"),
+                                fieldWithPath("endEventDateTime").description("date time of end of new event"),
+                                fieldWithPath("location").description("location of new event"),
+                                fieldWithPath("basePrice").description("base price of new event"),
+                                fieldWithPath("maxPrice").description("max price of new event"),
+                                fieldWithPath("limitOfEnrollment").description("limit of new event")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Location header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("Content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("id").description("identifier of new event"),
+                                fieldWithPath("name").description("Name of new event"),
+                                fieldWithPath("description").description("description of new event"),
+                                fieldWithPath("beginEnrollmentDateTime").description("date time of begin of new event"),
+                                fieldWithPath("closeEnrollmentDateTime").description("date time of close of new event"),
+                                fieldWithPath("beginEventDateTime").description("date time of begin of new event"),
+                                fieldWithPath("endEventDateTime").description("date time of end of new event"),
+                                fieldWithPath("location").description("location of new event"),
+                                fieldWithPath("basePrice").description("base price of new event"),
+                                fieldWithPath("maxPrice").description("max price of new event"),
+                                fieldWithPath("limitOfEnrollment").description("limit of new event"),
+                                fieldWithPath("free").description("it tells if this event is free or not"),
+                                fieldWithPath("offline").description("it tells if this offline event or not"),
+                                fieldWithPath("eventStatus").description("eventStatus"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.query-events.href").description("link to query event list"),
+                                fieldWithPath("_links.update-event.href").description("link to update existing event list"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
+
+
+                        )
+                ))
         ;
     }
 
@@ -169,7 +170,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -211,7 +212,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder().name("Spring")
                 .description("REST API")
@@ -240,7 +241,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    @DisplayName("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
     public void queryEvents() throws Exception {
         // Given
         IntStream.range(0, 30).forEach(this::generateEvent);
@@ -262,7 +263,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("인증을 가지고 30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    @DisplayName("인증을 가지고 30개의 이벤트를 10개씩 두번째 페이지 조회하기")
     public void queryEventsWithAuthentication() throws Exception {
         // Given
         IntStream.range(0, 30).forEach(this::generateEvent);
@@ -285,7 +286,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("기존의 이벤트를 하나 조회하기")
+    @DisplayName("기존의 이벤트를 하나 조회하기")
     public void getEvent() throws Exception {
         // Given
         Account account = this.createAccount();
@@ -302,7 +303,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("없는 이벤트는 조회했을때 404 응답받기")
+    @DisplayName("없는 이벤트는 조회했을때 404 응답받기")
     public void getEvent404() throws Exception {
         // When & Then
         this.mockMvc.perform(get("/api/events/1181238"))
@@ -311,7 +312,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("이벤트를 정상적으로 수정하기")
+    @DisplayName("이벤트를 정상적으로 수정하기")
     public void updateEvent() throws Exception {
         // Given
         Account account = this.createAccount();
@@ -336,7 +337,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력값이 비어있는 경우에 이벤트 수정 실패")
+    @DisplayName("입력값이 비어있는 경우에 이벤트 수정 실패")
     public void updateEvent400_Empty() throws Exception {
         // Given
         Event event = this.generateEvent(200);
@@ -356,7 +357,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("입력값이 잘못된 경우에 이벤트 수정 실패")
+    @DisplayName("입력값이 잘못된 경우에 이벤트 수정 실패")
     public void updateEvent400_Wrong() throws Exception {
         // Given
         Event event = this.generateEvent(200);
@@ -378,7 +379,7 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
-    @TestDescription("존재하지 않는 이벤트 수정 실패")
+    @DisplayName("존재하지 않는 이벤트 수정 실패")
     public void updateEvent404() throws Exception {
         // Given
         Event event = this.generateEvent(200);

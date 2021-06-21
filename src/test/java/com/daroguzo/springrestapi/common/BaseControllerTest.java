@@ -2,6 +2,7 @@ package com.daroguzo.springrestapi.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfiguration.class)
 @ActiveProfiles("test")
-@Ignore
+@Disabled
 public class BaseControllerTest {
     /*
     스프링 MVC 테스트 핵심 클래스
