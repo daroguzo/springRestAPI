@@ -4,7 +4,6 @@ import com.daroguzo.springrestapi.accounts.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -24,9 +23,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserDetailsService userDetailsService;
-
-    @Autowired
     AccountService accountService;
 
     @Autowired
@@ -41,9 +37,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("myApp")
-                .authorizedGrantTypes("password", "refresh_token")
-                .scopes("read", "write", "trust")
                 .secret(this.passwordEncoder.encode("pass"))
+                .authorizedGrantTypes("password", "refresh_token")
+                .scopes("read", "write")
                 .accessTokenValiditySeconds(10 * 60)
                 .refreshTokenValiditySeconds(6 * 10 * 60);
     }
@@ -51,7 +47,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService)
+                .userDetailsService(accountService)
                 .tokenStore(tokenStore);
     }
 }

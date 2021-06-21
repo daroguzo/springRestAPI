@@ -41,10 +41,10 @@ public class AuthServerConfigTest extends BaseControllerTest {
                     .with(httpBasic(clientId, clientSecret))
                     .param("username", username)
                     .param("password", password)
-                    .param("grant_type", "bearer"))
+                    .param("grant_type", "password"))
                 .andDo(print())
-               //.andExpect(status().isOk())
-                .andExpect(jsonPath("access_token").isNotEmpty())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token").exists())
         ;
     }
 }
