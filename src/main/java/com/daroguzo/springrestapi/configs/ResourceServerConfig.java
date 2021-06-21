@@ -20,14 +20,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .anonymous()
-                .and()
+                    .and()
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/api/**").authenticated()
-                .mvcMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                .and()
+                    .mvcMatchers(HttpMethod.GET, "/api/**")
+                        .permitAll()
+                .anyRequest()
+                        .authenticated()
+                    .and()
                 .exceptionHandling()
-                .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+                    .accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }
 
 }

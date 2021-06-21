@@ -132,19 +132,21 @@ public class EventControllerTests extends BaseControllerTest {
 //                ))
         ;
     }
+
     private String getBearerToken() throws Exception{
-        return "Bearer " + getAccessToken();
+        return "Bearer " + getAccessToken(true);
+    }
+
+    private String getBearerToken(Boolean needToCreateAccount) throws Exception{
+        return "Bearer " + getAccessToken(needToCreateAccount);
     }
 
 
-    private String getAccessToken() throws Exception {
+    private String getAccessToken(boolean needToCreateAccount) throws Exception {
         // Given
-        Account daroguzo = Account.builder()
-                .email(appProperties.getUserUsername())
-                .password(appProperties.getUserPassword())
-                .roles(Set.of(Accountable.ADMIN, Accountable.USER))
-                .build();
-        this.accountService.saveAccount(daroguzo);
+        if (needToCreateAccount) {
+            createAccount();
+        }
 
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
                 .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
@@ -155,6 +157,15 @@ public class EventControllerTests extends BaseControllerTest {
         var responseBody = perform.andReturn().getResponse().getContentAsString();
         Jackson2JsonParser parser = new Jackson2JsonParser();
         return parser.parseMap(responseBody).get("access_token").toString();
+    }
+
+    private Account createAccount() {
+        Account daroguzo = Account.builder()
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
+                .roles(Set.of(Accountable.ADMIN, Accountable.USER))
+                .build();
+        return this.accountService.saveAccount(daroguzo);
     }
 
     @Test
@@ -251,11 +262,34 @@ public class EventControllerTests extends BaseControllerTest {
     }
 
     @Test
+    @TestDescription("인증을 가지고 30개의 이벤트를 10개씩 두번째 페이지 조회하기")
+    public void queryEventsWithAuthentication() throws Exception {
+        // Given
+        IntStream.range(0, 30).forEach(this::generateEvent);
+
+        // When & Then
+        this.mockMvc.perform(get("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.create-event").exists())
+                .andDo(document("query-events"))
+        ;
+    }
+
+    @Test
     @TestDescription("기존의 이벤트를 하나 조회하기")
     public void getEvent() throws Exception {
         // Given
-        Event event = this.generateEvent(100);
-
+        Account account = this.createAccount();
+        Event event = this.generateEvent(100, account);
         // When & Then
         this.mockMvc.perform(get("/api/events/{id}", event.getId()))
                 .andExpect(status().isOk())
@@ -280,7 +314,8 @@ public class EventControllerTests extends BaseControllerTest {
     @TestDescription("이벤트를 정상적으로 수정하기")
     public void updateEvent() throws Exception {
         // Given
-        Event event = this.generateEvent(200);
+        Account account = this.createAccount();
+        Event event = this.generateEvent(200, account);
 
         EventDto eventDto = this.modelMapper.map(event, EventDto.class);
         String eventName = "Updated Event";
@@ -288,7 +323,7 @@ public class EventControllerTests extends BaseControllerTest {
 
         // When & Then
         this.mockMvc.perform(put("/api/events/{id}", event.getId())
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(false))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(this.objectMapper.writeValueAsString(eventDto))
                     )
@@ -362,24 +397,32 @@ public class EventControllerTests extends BaseControllerTest {
         ;
     }
 
+    private Event generateEvent(int index, Account account) {
+        Event event = buildEvent(index);
+        event.setManager(account);
+        return this.eventRepository.save(event);
+    }
 
     private Event generateEvent(int index) {
-        Event event = Event.builder()
-                .name("event " + index)
-                .description("test event")
-                .beginEnrollmentDateTime(LocalDateTime.of(2020, 5, 11, 20, 11))
-                .closeEnrollmentDateTime(LocalDateTime.of(2020, 5, 12, 18, 20))
-                .beginEventDateTime(LocalDateTime.of(2020, 5, 15, 18, 20))
-                .endEventDateTime(LocalDateTime.of(2020, 5, 16, 18, 20))
-                .basePrice(100)
-                .maxPrice(200)
-                .limitOfEnrollment(100)
-                .location("하계역 5번출구")
-                .free(false)
-                .offline(true)
-                .eventStatus(EventStatus.DRAFT)
-                .build();
-
+        Event event = buildEvent(index);
         return this.eventRepository.save(event);
+    }
+
+    private Event buildEvent(int index) {
+        return Event.builder()
+                    .name("event " + index)
+                    .description("test event")
+                    .beginEnrollmentDateTime(LocalDateTime.of(2020, 5, 11, 20, 11))
+                    .closeEnrollmentDateTime(LocalDateTime.of(2020, 5, 12, 18, 20))
+                    .beginEventDateTime(LocalDateTime.of(2020, 5, 15, 18, 20))
+                    .endEventDateTime(LocalDateTime.of(2020, 5, 16, 18, 20))
+                    .basePrice(100)
+                    .maxPrice(200)
+                    .limitOfEnrollment(100)
+                    .location("하계역 5번출구")
+                    .free(false)
+                    .offline(true)
+                    .eventStatus(EventStatus.DRAFT)
+                    .build();
     }
 }
